@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			body {
+				margin: 0;
+			}
+			#div1 {
+				width: 100px;
+				height: 100px;
+				background: red;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+			#div2 {
+				width: 100px;
+				height: 100px;
+				background: greenyellow;
+				position: absolute;
+				left: 110px;
+				top: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="div1"></div>
+		<div id="div2"></div>
+		<script>
+			(function(){
+				function Tab(id){
+					this.div = document.getElementById(id);
+					this.disX = 0;
+					this.disY = 0;
+				}
+				
+				Tab.prototype.init = function(){
+					var _this = this;
+					this.div.addEventListener('mousedown',function(ev){
+						_this.div.style.background = "blue";
+						_this.down(ev);
+					});
+				}
+				
+				Tab.prototype.down = function(ev) {
+					var _this = this;
+					this.disX = ev.pageX - this.div.offsetLeft;
+					this.disY = ev.pageY - this.div.offsetTop;
+					
+					document.addEventListener('mousemove',fnMove);
+					document.addEventListener('mouseup',fnUp);
+					function fnMove(ev) {
+						_this.move(ev);
+					}
+					
+					function fnUp() {
+						_this.div.style.background = "red";
+						_this.up(fnMove,fnUp);
+					}
+					
+					ev.preventDefault();
+				};
+				
+				Tab.prototype.move = function(ev){
+					this.div.style.left = ev.pageX - this.disX + 'px';
+					this.div.style.top = ev.pageY - this.disY + 'px';
+					
+				};
+				
+				Tab.prototype.up = function(fnMove,fnUp){
+					document.removeEventListener('mousemove',fnMove);
+					document.removeEventListener('mouseup',fnUp);
+				};
+				
+				
+				var t1 = new Tab('div1');
+				t1.init();
+				var t2 = new Tab('div2');
+				t2.init();
+			})();
+		</script>
+	</body>
+</html>
